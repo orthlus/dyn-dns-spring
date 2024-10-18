@@ -28,10 +28,7 @@ public class RestTemplatesConfig {
 	}
 
 	@Bean
-	public RestTemplate ifconfig(RestTemplateBuilder restTemplateBuilder,
-								 @Value("${ifconfig.url}") String url) {
-		return restTemplateBuilder
-				.rootUri(url)
-				.build();
+	public RestTemplate ifconfig(RestTemplateBuilder restTemplateBuilder) {
+		return restTemplateBuilder.build();
 	}
 }

@@ -1,11 +1,19 @@
 package art.aelaort.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CloudflareDnsDto {
-	private final String content;
-	private final String name;
-	private final String type = "A";
-	private final int ttl = 300;
+	@NonNull
+	@JsonProperty
+	private String content;
+	@NonNull
+	@JsonProperty
+	private String name;
+	@JsonProperty
+	private String type = "A";
+	@JsonProperty
+	private int ttl = 300;
 }

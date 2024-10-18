@@ -15,6 +15,8 @@ public class Properties {
 	private String telegramChat;
 	@Value("${telegram.token}")
 	private String telegramToken;
+	@Value("${ifconfig.url}")
+	private String ifconfigUrl;
 
 	public String getDomain() {
 		return subDomain + "." + rootDomain;

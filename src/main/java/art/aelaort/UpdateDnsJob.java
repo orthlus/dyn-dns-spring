@@ -15,18 +15,17 @@ import java.util.concurrent.atomic.AtomicReference;
 @Component
 @RequiredArgsConstructor
 public class UpdateDnsJob {
-	private final RestTemplate ifconfig;
 	private final RestTemplate telegram;
 
 	private final Properties properties;
 	private final CloudflareService cloudflareService;
 
 	private final AtomicReference<String> savedIpAddress = new AtomicReference<>("");
+	private final IfConfigService ifConfigService;
 
 	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES)
-//	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES, initialDelay = 10)
 	public void update() {
-		String actualIp = readIfConfig();
+		String actualIp = ifConfigService.getIp();
 		if (actualIp.equals(savedIpAddress.get())) {
 			return;
 		}
@@ -35,12 +34,13 @@ public class UpdateDnsJob {
 		ResponseEntity<String> response = cloudflareService.saveIpToDns(dto(actualIp));
 		if (response.getStatusCode().is2xxSuccessful()) {
 			savedIpAddress.set(actualIp);
+
 			String logStr = "ip changed to " + actualIp;
 			log.info(logStr);
-			telegramLog(logStr);
+			telegramLog("update-dns\n%s\n%s".formatted(properties.getDomain(), actualIp));
 		} else {
-			String logStr = "error during update dns: " + response.getBody();
-			log.error(logStr);
+			String logStr = "error during update dns";
+			log.error("{}: {}", logStr, response.getBody());
 			telegramLog(logStr);
 		}
 	}
@@ -48,10 +48,6 @@ public class UpdateDnsJob {
 	private void telegramLog(String text) {
 		String url = "/bot%s/sendmessage?chat_id={chat}&text={text}".formatted(properties.getTelegramToken());
 		telegram.getForObject(url, String.class, properties.getTelegramChat(), text);
-	}
-
-	private String readIfConfig() {
-		return ifconfig.getForObject("/", String.class);
 	}
 
 	private CloudflareDnsDto dto(String ipAddress) {
