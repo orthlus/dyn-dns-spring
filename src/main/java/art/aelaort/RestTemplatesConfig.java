@@ -8,17 +8,6 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RestTemplatesConfig {
-//	@Bean
-	public RestTemplate cloudflare(RestTemplateBuilder restTemplateBuilder,
-							 @Value("${cloudflare.api.token}") String token,
-							 @Value("${cloudflare.api.url}") String url) {
-		return restTemplateBuilder
-				.rootUri(url)
-				.defaultHeader("authorization", "Bearer " + token)
-				.defaultHeader("content-type", "application/json")
-				.build();
-	}
-
 	@Bean
 	public RestTemplate yandexDns(RestTemplateBuilder restTemplateBuilder,
 								  @Value("${yandex.dns.api.url}") String url) {
