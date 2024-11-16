@@ -22,10 +22,10 @@ public class YandexConfig {
 			RestTemplate yandexDns) {
 		return new YandexIAMSupplier(yandexDns,
 				new YandexIAMConfig(
-						s3url,
-						s3region,
 						s3id,
 						s3key,
+						s3url,
+						s3region,
 						s3bucket,
 						s3file,
 						funcsecret,
