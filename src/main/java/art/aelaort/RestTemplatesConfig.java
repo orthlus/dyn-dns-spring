@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RestTemplatesConfig {
-	@Bean
+//	@Bean
 	public RestTemplate cloudflare(RestTemplateBuilder restTemplateBuilder,
 							 @Value("${cloudflare.api.token}") String token,
 							 @Value("${cloudflare.api.url}") String url) {

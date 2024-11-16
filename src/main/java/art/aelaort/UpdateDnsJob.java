@@ -1,6 +1,5 @@
 package art.aelaort;
 
-import art.aelaort.models.CloudflareDnsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +17,10 @@ public class UpdateDnsJob {
 	private final RestTemplate telegram;
 
 	private final Properties properties;
-	private final CloudflareService cloudflareService;
 
 	private final AtomicReference<String> savedIpAddress = new AtomicReference<>("");
 	private final IfConfigService ifConfigService;
+	private final YandexDnsService yandexDnsService;
 
 	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES)
 	public void update() {
@@ -31,13 +30,13 @@ public class UpdateDnsJob {
 		}
 		log.info("'ip was changed, updating dns...'");
 
-		ResponseEntity<String> response = cloudflareService.saveIpToDns(dto(actualIp));
+		ResponseEntity<String> response = yandexDnsService.saveIpToDns(actualIp);
 		if (response.getStatusCode().is2xxSuccessful()) {
 			savedIpAddress.set(actualIp);
 
 			String logStr = "ip changed to " + actualIp;
 			log.info(logStr);
-			telegramLog("update-dns\n%s\n%s".formatted(properties.getDomain(), actualIp));
+			telegramLog("update-dns\n%s\n%s".formatted(properties.getDomainName(), actualIp));
 		} else {
 			String logStr = "error during update dns";
 			log.error("{}: {}", logStr, response.getBody());
@@ -48,9 +47,5 @@ public class UpdateDnsJob {
 	private void telegramLog(String text) {
 		String url = "/bot%s/sendmessage?chat_id={chat}&text={text}".formatted(properties.getTelegramToken());
 		telegram.getForObject(url, String.class, properties.getTelegramChat(), text);
-	}
-
-	private CloudflareDnsDto dto(String ipAddress) {
-		return new CloudflareDnsDto(ipAddress, properties.getDomain());
 	}
 }
