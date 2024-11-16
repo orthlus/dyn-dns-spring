@@ -20,6 +20,14 @@ public class RestTemplatesConfig {
 	}
 
 	@Bean
+	public RestTemplate yandexDns(RestTemplateBuilder restTemplateBuilder,
+								  @Value("${yandex.dns.api.url}") String url) {
+		return restTemplateBuilder
+				.rootUri(url)
+				.build();
+	}
+
+	@Bean
 	public RestTemplate telegram(RestTemplateBuilder restTemplateBuilder,
 							 @Value("${telegram.api}") String url) {
 		return restTemplateBuilder

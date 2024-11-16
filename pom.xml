@@ -37,6 +37,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-json</artifactId>
         </dependency>
+        <dependency>
+            <groupId>art.aelaort</groupId>
+            <artifactId>ya-iam-helper</artifactId>
+            <version>3.0</version>
+        </dependency>
 
     </dependencies>
 
