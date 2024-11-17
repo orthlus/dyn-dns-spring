@@ -26,8 +26,8 @@ public class YandexConfig {
 						s3key,
 						s3url,
 						s3region,
-						s3bucket,
 						s3file,
+						s3bucket,
 						funcsecret,
 						funcurl
 				));
