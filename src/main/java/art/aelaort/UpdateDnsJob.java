@@ -1,5 +1,6 @@
 package art.aelaort;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,11 @@ public class UpdateDnsJob {
 	private final AtomicReference<String> savedIpAddress = new AtomicReference<>("");
 	private final IfConfigService ifConfigService;
 	private final YandexDnsService yandexDnsService;
+
+	@PostConstruct
+	private void init() {
+		savedIpAddress.set(yandexDnsService.getSavedIp());
+	}
 
 	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES)
 	public void update() {

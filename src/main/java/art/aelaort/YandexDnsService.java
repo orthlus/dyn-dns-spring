@@ -1,5 +1,6 @@
 package art.aelaort;
 
+import art.aelaort.models.RecordSets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -18,6 +19,17 @@ public class YandexDnsService {
 	@Value("${yandex.dns.zone_id}")
 	private String zoneId;
 
+	public String getSavedIp() {
+		return yandexDns.exchange(
+				"/dns/v1/zones/%s:listRecordSets".formatted(zoneId),
+				HttpMethod.GET,
+				entityBearerToken(yandexIAMSupplier.getToken()),
+				RecordSets.class
+		)
+				.getBody()
+				.getIpByName(properties.getDomainName());
+	}
+
 	public ResponseEntity<String> saveIpToDns(String ip) {
 		return yandexDns.exchange(
 				"/dns/v1/zones/%s:upsertRecordSets".formatted(zoneId),
@@ -35,6 +47,12 @@ public class YandexDnsService {
 				  "data": ["%s"]
 				}]}
 				""".formatted(properties.getDomainName(), ip);
+	}
+
+	private HttpEntity<?> entityBearerToken(String token) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setBearerAuth(token);
+		return new HttpEntity<>(headers);
 	}
 
 	private HttpEntity<?> entityBearerToken(String body, String token) {
