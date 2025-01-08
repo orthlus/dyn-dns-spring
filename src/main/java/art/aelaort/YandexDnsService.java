@@ -13,8 +13,8 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @RequiredArgsConstructor
 public class YandexDnsService {
-	private final YandexIAMSupplier yandexIAMSupplier;
 	private final RestTemplate yandexDns;
+	private final RestTemplate iamRestTemplate;
 	private final Properties properties;
 	@Value("${yandex.dns.zone_id}")
 	private String zoneId;
@@ -23,7 +23,7 @@ public class YandexDnsService {
 		return yandexDns.exchange(
 				"/dns/v1/zones/%s:listRecordSets".formatted(zoneId),
 				HttpMethod.GET,
-				entityBearerToken(yandexIAMSupplier.getToken()),
+				entityBearerToken(getToken()),
 				RecordSets.class
 		)
 				.getBody()
@@ -34,7 +34,7 @@ public class YandexDnsService {
 		return yandexDns.exchange(
 				"/dns/v1/zones/%s:upsertRecordSets".formatted(zoneId),
 				HttpMethod.POST,
-				entityBearerToken(body(ip), yandexIAMSupplier.getToken()),
+				entityBearerToken(body(ip), getToken()),
 				String.class);
 	}
 
@@ -59,5 +59,9 @@ public class YandexDnsService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(token);
 		return new HttpEntity<>(body, headers);
+	}
+
+	private String getToken() {
+		return iamRestTemplate.getForObject("/token", String.class);
 	}
 }

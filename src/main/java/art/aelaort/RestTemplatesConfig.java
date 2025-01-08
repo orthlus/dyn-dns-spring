@@ -28,4 +28,10 @@ public class RestTemplatesConfig {
 	public RestTemplate ifconfig(RestTemplateBuilder restTemplateBuilder) {
 		return restTemplateBuilder.build();
 	}
+
+	@Bean
+	public RestTemplate iamRestTemplate(RestTemplateBuilder restTemplateBuilder,
+										@Value("${iam.url}") String url) {
+		return restTemplateBuilder.rootUri(url).build();
+	}
 }
