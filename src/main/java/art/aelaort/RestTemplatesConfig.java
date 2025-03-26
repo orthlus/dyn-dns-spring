@@ -18,7 +18,7 @@ public class RestTemplatesConfig {
 
 	@Bean
 	public RestTemplate telegram(RestTemplateBuilder restTemplateBuilder,
-							 @Value("${telegram.api}") String url) {
+								 @Value("${telegram.api}") String url) {
 		return restTemplateBuilder
 				.rootUri(url)
 				.build();
