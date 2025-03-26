@@ -18,7 +18,7 @@ public class IfConfigService {
 		try {
 			return privateRequest();
 		} catch (Exception e) {
-			log.error("private ifconfig error", e);
+			log.error("private ifconfig error: {}", e.getMessage());
 			return publicRequest();
 		}
 	}
