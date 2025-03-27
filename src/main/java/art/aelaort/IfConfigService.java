@@ -16,11 +16,18 @@ public class IfConfigService {
 
 	public String getIp() {
 		try {
+			return publicRequest();
+		} catch (Exception e) {
+			log.error("public ifconfig error: {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
+
+		/*try {
 			return privateRequest();
 		} catch (Exception e) {
 			log.error("private ifconfig error: {}", e.getMessage());
 			return publicRequest();
-		}
+		}*/
 	}
 
 	private String privateRequest() {
